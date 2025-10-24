@@ -1,0 +1,56 @@
+Test the Camera on Raspberry Pi
+
+    export DISPLAY=:0
+    libcamera-hello -t 0
+
+
+Installing Dependencies and Creating a Folder on Raspberry Pi
+
+    sudo apt update && sudo apt upgrade -y
+    mkdir yolo  # Create a folder
+    cd yolo
+    python3 -m venv --system-site-packages venv  # Create a virtual environment
+    source venv/bin/activate  # Activate the virtual environment
+
+
+Installing YOLOv8 for Raspberry Pi
+
+    cd yolo
+    source venv/bin/activate  # Activate the virtual environment
+    pip install ultralytics ncnn
+
+
+Download a Model from COCO that Includes yolov8n.pt
+
+    yolo detect predict model=yolov8n.pt  # This will open the model
+
+
+Export YOLO to NCNN Format
+
+    yolo export model=yolov8n.pt format=ncnn
+
+
+Download the Object Detection Code (Credits to ejtech.io)
+
+    wget https://ejtech.io/code/yolo_detect.py
+
+
+Sample Command to Run It
+
+    python yolo_detect.py --model=yolov8n_ncnn_model --source=picamera0 --resolution=640x480
+
+
+For Project Vacuum AI
+Download your custom best.pt model from GitHub and the corresponding code. Then follow the steps below to test your custom model:
+
+    cd yolo
+    source venv/bin/activate
+    yolo export model=best.pt format=ncnn
+    python yolo_detect.py --model=best_ncnn_model --source=picamera0 --resolution=640x480
+
+
+Now follow the diagram from GitHub to connect the PCA9685 module to the Raspberry Pi, and then connect the PCA9685 to the servo motor.
+
+Run this command — if a compostable item is detected, the arm will tilt to the left; if a non-compostable item is detected, it will tilt to the right so it falls into the correct trash bin:
+
+    python yolo_servo.py --model=best_ncnn_model --source=picamera0 --resolution=640x480

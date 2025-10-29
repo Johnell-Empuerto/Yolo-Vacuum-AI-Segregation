@@ -10,7 +10,7 @@ The system detects compostable and non-compostable items using a camera and auto
 
 ```bash
 export DISPLAY=:0
-libcamera-hello -t 0
+rpicam-hello -t 0
 ````
 
 ---

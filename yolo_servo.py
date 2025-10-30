@@ -128,6 +128,10 @@ kit = ServoKit(channels=16)
 kit.servo[0].set_pulse_width_range(1000, 2000)  # Standard for MG996R; adjust if needed
 kit.servo[0].angle = 90  # Start at neutral/original position
 
+hold_duration = 20
+last_set_time = time.time()
+current_angle = 90
+
 # Begin inference loop
 while True:
     t_start = time.perf_counter()
@@ -211,12 +215,29 @@ while True:
             object_count += 1
 
     # Servo control logic
+    current_time = time.time()
+    if current_angle != 90 and current_time - last_set_time >= hold_duration:
+        kit.servo[0].angle = 90
+        current_angle = 90
+
     if compostable_detected and not non_compostable_detected:
-        kit.servo[0].angle = 180  # Slant to right for Compostable (fall to compostable trash)
+        if current_angle != 180:
+            kit.servo[0].angle = 180
+            current_angle = 180
+            last_set_time = current_time
+        else:
+            last_set_time = current_time
     elif non_compostable_detected and not compostable_detected:
-        kit.servo[0].angle = 0  # Slant to left for Non-Compostable
-    else:
-        kit.servo[0].angle = 90  # Stay at neutral/original if both or neither detected (invalid/ambiguous)
+        if current_angle != 0:
+            kit.servo[0].angle = 0
+            current_angle = 0
+            last_set_time = current_time
+        else:
+            last_set_time = current_time
+    elif compostable_detected and non_compostable_detected:
+        kit.servo[0].angle = 90
+        current_angle = 90
+    # Else (neither): do nothing, hold expires naturally if active
 
     # Calculate and draw framerate (if using video, USB, or Picamera source)
     if source_type in ['video', 'usb', 'picamera']:

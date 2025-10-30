@@ -1,7 +1,10 @@
+Perfect — here’s your **updated README** with your new section (“System Auto-Run + Delay Logic”) inserted naturally near the end, keeping the flow clear and human-readable 👇
+
+---
 
 # 🧠 Vacuum AI — YOLOv8n on Raspberry Pi
 
-This project demonstrates how to use **YOLOv8n** for **AI-powered trash segregation** on a **Raspberry Pi** with a **servo-controlled robotic arm**.  
+This project demonstrates how to use **YOLOv8n** for **AI-powered trash segregation** on a **Raspberry Pi** with a **servo-controlled robotic arm**.
 The system detects compostable and non-compostable items using a camera and automatically sorts them into the correct bins.
 
 ---
@@ -11,7 +14,7 @@ The system detects compostable and non-compostable items using a camera and auto
 ```bash
 export DISPLAY=:0
 rpicam-hello -t 0
-````
+```
 
 ---
 
@@ -106,6 +109,42 @@ python yolo_servo.py --model=best_ncnn_model --source=picamera0 --resolution=640
 
 ---
 
+## 🔁 System Auto-Run + Delay Logic
+
+The YOLO system can automatically start when the Raspberry Pi boots up.
+
+1. **Startup Process:**
+
+   * After powering on, the system loads the camera and YOLO model automatically.
+   * This process usually takes **20–30 seconds** before the video and detections appear.
+
+2. **Detection and Action:**
+
+   * Once the object is detected, the system waits around **20 seconds**.
+   * This short pause allows the AI to confirm what it saw.
+   * After the delay, the **vacuum motor turns ON** to suck and sort the item.
+
+3. **Idle State:**
+
+   * If there’s no object, the vacuum stays **off**.
+   * When a new object appears, the same 20-second check happens again before the vacuum activates.
+
+4. **Manual Restart (Optional):**
+   If you ever need to restart the service manually:
+
+   ```bash
+   sudo systemctl restart yolo.service
+   ```
+
+5. **Check Logs (Optional):**
+   To view real-time logs or AI detections:
+
+   ```bash
+   sudo journalctl -u yolo.service -f
+   ```
+
+---
+
 ## 📂 Repository Contents
 
 ```
@@ -132,5 +171,7 @@ python yolo_servo.py --model=best_ncnn_model --source=picamera0 --resolution=640
 ### 🧾 License
 
 This project is open-source and free to use for educational and research purposes.
+
+---
 
 

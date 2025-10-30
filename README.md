@@ -1,4 +1,4 @@
-Here’s your **fully updated README.md**, with the new “System Auto-Run + Delay Logic” section added — and clearly stating that **the vacuum must be turned on manually** 👇
+
 
 ---
 
